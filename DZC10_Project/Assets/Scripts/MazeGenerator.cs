@@ -21,9 +21,6 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
     void Start()
     {
         GenerateCave();
-
-
-
         // Try to find a random starting point that is an open tile.
         int maxAttempts = 1000;
         int attempts = 0;
@@ -54,6 +51,8 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
         {
             Debug.LogWarning("Could not find an open tile to start from after " + maxAttempts + " attempts.");
         }
+
+
         for (int x = 0; x < canvasWidth; x++)
         {
             for (int y = 0; y < canvasHeight; y++)
@@ -61,35 +60,48 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
                 Vector3Int position = new Vector3Int(x, y, 0);
                 Tile currentTile = tilemap.GetTile<Tile>(position);
 
-                if (currentTile == wallTile)
+                if (currentTile != pathTile)
                 {
-                    bool isAdjacentToPath = false;
-                    Vector3Int[] directions = {
-                new Vector3Int(1, 0, 0),
-                new Vector3Int(-1, 0, 0),
-                new Vector3Int(0, 1, 0),
-                new Vector3Int(0, -1, 0)
-            };
+                    tilemap.SetTile(position, null);  // Clear the tile if it is not part of the flood-filled path.
+                    Debug.Log("Removing tile at: " + position);  // Debug statement
+                }
+                else
+                {
+                    Debug.Log("Keeping tile at: " + position);  // Debug statement
+                }
+            }
+        }
 
-                    foreach (Vector3Int dir in directions)
-                    {
-                        Vector3Int neighborPos = position + dir;
-                        if (floodFilledTiles.Contains(neighborPos))
-                        {
-                            isAdjacentToPath = true;
-                            break;
-                        }
-                    }
+        AddWallsAroundFloodFilledArea();
 
-                    if (!isAdjacentToPath)
-                    {
-                        tilemap.SetTile(position, null);  // Clear the tile if it is not adjacent to any path.
-                    }
+        tilemap.RefreshAllTiles();  // Refresh the tilemap
+
+    }
+
+    void AddWallsAroundFloodFilledArea()
+    {
+        foreach (Vector3Int filledTile in floodFilledTiles)
+        {
+            Vector3Int[] directions = {
+            new Vector3Int(1, 0, 0),
+            new Vector3Int(-1, 0, 0),
+            new Vector3Int(0, 1, 0),
+            new Vector3Int(0, -1, 0)
+        };
+
+            foreach (Vector3Int dir in directions)
+            {
+                Vector3Int next = filledTile + dir;
+
+                if (!floodFilledTiles.Contains(next) &&
+                    next.x >= 0 && next.x < canvasWidth &&
+                    next.y >= 0 && next.y < canvasHeight)
+                {
+                    tilemap.SetTile(next, wallTile);
                 }
             }
         }
     }
-
 
     void GenerateCave()
     {
@@ -155,29 +167,6 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
                         open.Enqueue(next);
                         floodFilledTiles.Add(next); // Add the tile to the floodFilledTiles set
                     }
-                }
-            }
-        }
-
-        // Now set one level of walls around each flood-filled tile
-        foreach (Vector3Int filledTile in floodFilledTiles)
-        {
-            Vector3Int[] directions = {
-            new Vector3Int(1, 0, 0),
-            new Vector3Int(-1, 0, 0),
-            new Vector3Int(0, 1, 0),
-            new Vector3Int(0, -1, 0)
-        };
-
-            foreach (Vector3Int dir in directions)
-            {
-                Vector3Int next = filledTile + dir;
-
-                if (!floodFilledTiles.Contains(next) &&
-                    next.x >= 0 && next.x < canvasWidth &&
-                    next.y >= 0 && next.y < canvasHeight)
-                {
-                    tilemap.SetTile(next, wallTile);
                 }
             }
         }
