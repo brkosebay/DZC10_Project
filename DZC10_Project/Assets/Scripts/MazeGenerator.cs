@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
@@ -10,6 +10,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
     public Tile pathTile;
     public float threshold = 0.4f;
     public int scale = 1;
+    public GameObject player;
 
     private const float PI50000 = Mathf.PI * 50000f;
     private int canvasWidth = 64;
@@ -19,6 +20,8 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
     void Start()
     {
         GenerateCave();
+
+
 
         // Try to find a random starting point that is an open tile.
         int maxAttempts = 1000;
@@ -44,6 +47,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
         if (foundOpenTile)
         {
             FloodFill(startPoint, openTile, pathTile);
+            player.transform.position = tilemap.CellToWorld(startPoint) + new Vector3(0.5f, 0.5f, 0); // Added offset to center the character in the tile
         }
         else
         {
