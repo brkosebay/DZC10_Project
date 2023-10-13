@@ -1,37 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;  // Add this
 
 public class CharacterMovement : MonoBehaviour
 {
     public float speed = 5.0f;
-    private Rigidbody2D rb;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    public Tilemap tilemap;  // Reference to the tilemap
+    public Tile pathTile;     // Reference to the path tile
 
     // Update is called once per frame
-
     private void Update()
     {
-        if(Input.GetKey(KeyCode.LeftArrow))
+        // Allow movement
+        if (Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.Translate(-speed * Time.deltaTime,0,0);
+            transform.Translate(-speed * Time.deltaTime, 0, 0);
         }
-        if(Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow))
         {
-            transform.Translate(speed * Time.deltaTime,0,0);
+            transform.Translate(speed * Time.deltaTime, 0, 0);
         }
-        if(Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow))
         {
-            transform.Translate(0,speed * Time.deltaTime,0);
+            transform.Translate(0, speed * Time.deltaTime, 0);
         }
-        if(Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.DownArrow))
         {
-            transform.Translate(0,-speed * Time.deltaTime,0);
+            transform.Translate(0, -speed * Time.deltaTime, 0);
         }
+      }
     }
-
-}

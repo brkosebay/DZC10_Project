@@ -45,7 +45,9 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
         if (foundOpenTile)
         {
             FloodFill(startPoint, openTile, pathTile);
-            player.transform.position = tilemap.CellToWorld(startPoint) + new Vector3(0.5f, 0.5f, 0); // Added offset to center the character in the tile
+            // Keep the startPoint as an openTile or pathTile instead of making it a wall.
+            tilemap.SetTile(startPoint, pathTile);
+            player.transform.position = tilemap.CellToWorld(startPoint) + new Vector3(0.5f, 0.5f, 0);
         }
         else
         {
@@ -60,17 +62,19 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
                 Vector3Int position = new Vector3Int(x, y, 0);
                 Tile currentTile = tilemap.GetTile<Tile>(position);
 
+                // Skip the tile if it's the starting point
+                if (position == startPoint)
+                {
+                    continue;
+                }
+
                 if (currentTile != pathTile)
                 {
                     tilemap.SetTile(position, null);  // Clear the tile if it is not part of the flood-filled path.
-                    Debug.Log("Removing tile at: " + position);  // Debug statement
-                }
-                else
-                {
-                    Debug.Log("Keeping tile at: " + position);  // Debug statement
                 }
             }
         }
+
 
         AddWallsAroundFloodFilledArea();
 

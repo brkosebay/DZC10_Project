@@ -307,6 +307,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  tilemap: {fileID: 644247372}
+  pathTile: {fileID: 11400000, guid: edb503acef2d64be3a27abd3c6dab88e, type: 2}
 --- !u!212 &605077853
 SpriteRenderer:
   m_ObjectHideFlags: 0
