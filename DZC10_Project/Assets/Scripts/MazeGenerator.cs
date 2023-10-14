@@ -20,49 +20,67 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
     public event MazeGenerationCompleteHandler OnMazeGenerationComplete;
 
     private const float PI50000 = Mathf.PI * 50000f;
-    
 
     void Start()
     {
-        GenerateCave();
-        // Try to find a random starting point that is an open tile.
-        int maxAttempts = 1000;
-        int attempts = 0;
+        int maxRegenerationAttempts = 10; // Limit the number of times we regenerate the entire cave
+        int regenerationAttempts = 0;
         Vector3Int startPoint = new Vector3Int();
-        bool foundOpenTile = false;
 
-        while (attempts < maxAttempts)
+        do
         {
-            int randomX = UnityEngine.Random.Range(0, canvasWidth);
-            int randomY = UnityEngine.Random.Range(0, canvasHeight);
-            startPoint = new Vector3Int(randomX, randomY, 0);
-
-            if (tilemap.GetTile(startPoint) == openTile)
+            GenerateCave();
+            bool foundOpenTile = false;
+         
+            // Find an open tile to start from
+            int maxAttempts = 1000;
+            int attempts = 0;
+            while (attempts < maxAttempts)
             {
-                foundOpenTile = true;
-                break;
+                int randomX = UnityEngine.Random.Range(0, canvasWidth);
+                int randomY = UnityEngine.Random.Range(0, canvasHeight);
+                startPoint = new Vector3Int(randomX, randomY, 0);
+
+                if (tilemap.GetTile(startPoint) == openTile)
+                {
+                    foundOpenTile = true;
+                    break;
+                }
+
+                attempts++;
             }
 
-            attempts++;
-        }
-
-        if (foundOpenTile)
-        {
-            FloodFill(startPoint, openTile, pathTile);
-            Debug.Log($"Number of walkable tiles: {floodFilledTiles.Count}");
-            foreach (var tile in floodFilledTiles)
+            if (foundOpenTile)
             {
-                Debug.DrawRay(tilemap.CellToWorld(tile), Vector3.up, Color.green, 10f);
-            }
-            // Keep the startPoint as an openTile or pathTile instead of making it a wall.
-            tilemap.SetTile(startPoint, pathTile);
-            player.transform.position = tilemap.CellToWorld(startPoint) + new Vector3(0.5f, 0.5f, 0);
-        }
-        else
-        {
-            Debug.LogWarning("Could not find an open tile to start from after " + maxAttempts + " attempts.");
-        }
+                FloodFill(startPoint, openTile, pathTile);
 
+                if (floodFilledTiles.Count <= 500)
+                {
+                    // Not enough tiles in this cave generation, reset and try again
+                    floodFilledTiles.Clear();
+                    regenerationAttempts++;
+                    continue;
+                }
+
+                foreach (var tile in floodFilledTiles)
+                {
+                    Debug.DrawRay(tilemap.CellToWorld(tile), Vector3.up, Color.green, 10f);
+                }
+                // Keep the startPoint as an openTile or pathTile instead of making it a wall.
+                tilemap.SetTile(startPoint, pathTile);
+                player.transform.position = tilemap.CellToWorld(startPoint) + new Vector3(0.5f, 0.5f, 0);
+
+            }
+            else
+            {
+                Debug.LogWarning("Could not find an open tile to start from after " + maxAttempts + " attempts.");
+            }
+        } while (floodFilledTiles.Count <= 100 && regenerationAttempts < maxRegenerationAttempts);
+
+        if (regenerationAttempts == maxRegenerationAttempts)
+        {
+            Debug.LogWarning("Max regeneration attempts reached. The generated cave may not meet the criteria.");
+        }
 
         for (int x = 0; x < canvasWidth; x++)
         {
@@ -100,7 +118,6 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
         }
 
         NotifyMazeGenerationComplete();
-
     }
 
     private void NotifyMazeGenerationComplete()
@@ -155,7 +172,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
 
     bool IsCaveOpen(int x, int y, float threshold)
     {
-        float u = PI50000 * Mathf.Sin(x) * Mathf.Cos(y);
+        float u = PI50000 * Mathf.Sin(x) * Mathf.Cos(y)+ UnityEngine.Random.Range(-0.1f, 0.1f);
         return (u - Mathf.Floor(u)) > threshold;
     }
 
