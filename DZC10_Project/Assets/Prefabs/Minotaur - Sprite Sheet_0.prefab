@@ -99,3 +99,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   detectionRadius: 10
+  patrolPoints: []
+  idleTime: 2
