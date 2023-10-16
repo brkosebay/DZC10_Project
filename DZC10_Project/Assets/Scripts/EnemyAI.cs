@@ -10,6 +10,8 @@ public class EnemyAI : MonoBehaviour
     private Transform playerTransform;   // Reference to the player's position
     private int currentPatrolPoint = 0;  // Current patrol point index
     private float idleTimer = 0.0f;      // Timer for idling
+    public int health = 100;
+    public GameObject deathEffect;
 
     private enum State
     {
@@ -101,5 +103,21 @@ public class EnemyAI : MonoBehaviour
                 currentState = State.Patrol; // Switch back to patrol if player is out of range
             }
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+
+        if(health <=0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Instantiate(deathEffect, playerTransform.position, Quaternion.identity);
+        Destroy(gameObject);
     }
 }
