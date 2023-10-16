@@ -15,9 +15,8 @@ public class EnemyManager : MonoBehaviour
     {
         generator = FindObjectOfType<CaveGeneratorWithFloodFill>();
         playerTransform = FindObjectOfType<CharacterMovement>().transform;  // Assuming your player character script is named "CharacterMovement"
-
-        // Subscribe to the event
         generator.OnMazeGenerationComplete += SpawnEnemiesCallback;
+
     }
 
     private Vector3Int GetSpawnLocation()
