@@ -15,14 +15,21 @@ public class Bullet : MonoBehaviour
 	}
 	void OnTriggerEnter2D (Collider2D hitInfo)
 	{
-		EnemyAI enemy = hitInfo.GetComponent<EnemyAI>();
-		if (enemy != null)
+		if(hitInfo.gameObject.tag == "Enemy")
 		{
-			enemy.TakeDamage(damage);
-		}
-        
-        GameObject effect = Instantiate(impactEffect, transform.position, transform.rotation);
-        Destroy(effect,0.1f);  // Destroy the effect after 0.5 seconds (adjust as needed)
-        Destroy(gameObject);
+            EnemyAI enemy = hitInfo.GetComponent<EnemyAI>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
+
+            GameObject effect = Instantiate(impactEffect, transform.position, transform.rotation);
+            Destroy(effect, 0.1f);  // Destroy the effect after 0.5 seconds (adjust as needed)
+            Destroy(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject, 0.5f);
+        }
 	}
 }
