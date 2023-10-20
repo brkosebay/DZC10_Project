@@ -29,14 +29,14 @@ public class CharacterMovement : MonoBehaviour
             animator.SetFloat("LastVertical", Input.GetAxisRaw("Vertical"));
         }
 
-        CaveGeneratorWithFloodFill generator = FindObjectOfType<CaveGeneratorWithFloodFill>();
+        /*CaveGeneratorWithFloodFill generator = FindObjectOfType<CaveGeneratorWithFloodFill>();
         Vector3Int playerCell = generator.tilemap.WorldToCell(transform.position);
         Vector3Int direction = new Vector3Int(Mathf.RoundToInt(Input.GetAxis("Horizontal")), Mathf.RoundToInt(Input.GetAxis("Vertical")), 0);
 
         if (IsNearOpenEdge(playerCell, generator, direction))
         {
             Debug.LogWarning("Character is in close proximity to the edge!");
-        }
+        }*/
 
     }
     
