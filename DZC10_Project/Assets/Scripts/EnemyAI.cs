@@ -117,7 +117,8 @@ public class EnemyAI : MonoBehaviour
 
     void Die()
     {
-        Instantiate(deathEffect, playerTransform.position, Quaternion.identity);
+        GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
+        Destroy(effect,0.05f);
         Destroy(gameObject);
     }
 }

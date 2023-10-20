@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 242021390255093746}
   - component: {fileID: 7366202515192759036}
   - component: {fileID: 4037505452199470533}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EnemyDeathEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,8 +71,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1697682017
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -1035238517, guid: a1892e083d2e4c64299aca79b9f181bf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

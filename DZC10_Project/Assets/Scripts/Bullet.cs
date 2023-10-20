@@ -20,9 +20,9 @@ public class Bullet : MonoBehaviour
 		{
 			enemy.TakeDamage(damage);
 		}
-
-		Instantiate(impactEffect, transform.position, transform.rotation);
-
-		Destroy(gameObject);
+        
+        GameObject effect = Instantiate(impactEffect, transform.position, transform.rotation);
+        Destroy(effect,0.1f);  // Destroy the effect after 0.5 seconds (adjust as needed)
+        Destroy(gameObject);
 	}
 }
