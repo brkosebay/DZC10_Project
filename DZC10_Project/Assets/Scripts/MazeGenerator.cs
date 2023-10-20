@@ -8,6 +8,9 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
     public Tile openTile;
     public Tile wallTile;
     public Tile pathTile;
+    public Tilemap decorationTilemap; // New tilemap for the decorations (bushes, etc.)
+    public Tile bushTile;  // The bush tile you want to place on top of the wall tiles
+
     public float threshold = 0.4f;
     public int scale = 1;
     public int x0 = 0, y0 = 0;
@@ -82,9 +85,9 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
             Debug.LogWarning("Max regeneration attempts reached. The generated cave may not meet the criteria.");
         }
 
-        for (int x = 0; x < canvasWidth; x++)
+        for (int x = 0; x <= canvasWidth; x++)
         {
-            for (int y = 0; y < canvasHeight; y++)
+            for (int y = 0; y <= canvasHeight; y++)
             {
                 Vector3Int position = new Vector3Int(x, y, 0);
                 Tile currentTile = tilemap.GetTile<Tile>(position);
@@ -101,6 +104,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
 
         // Then add the walls around the flood-filled area
         AddWallsAroundFloodFilledArea();
+        //AddBushesOnWalls();
 
         tilemap.RefreshAllTiles();  // Refresh the tilemap
 
@@ -116,7 +120,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
             if (tile.x > maxFloodFill.x) maxFloodFill.x = tile.x;
             if (tile.y > maxFloodFill.y) maxFloodFill.y = tile.y;
         }
-
+        
         NotifyMazeGenerationComplete();
     }
 
@@ -124,6 +128,26 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
     {
         OnMazeGenerationComplete?.Invoke();
     }
+
+    void AddBushesOnWalls()
+    {
+        float bushPlacementProbability = 0.5f; // Adjust this value for the likelihood of a bush being placed on a wall tile
+
+        for (int x = 0; x < canvasWidth; x++)
+        {
+            for (int y = 0; y < canvasHeight; y++)
+            {
+                Vector3Int position = new Vector3Int(x, y, 0);
+                Tile currentTile = tilemap.GetTile<Tile>(position);
+
+                if (currentTile == wallTile && UnityEngine.Random.value < bushPlacementProbability)
+                {
+                    decorationTilemap.SetTile(position, bushTile); // Set the bush tile on the decorations tilemap
+                }
+            }
+        }
+    }
+
 
     void AddWallsAroundFloodFilledArea()
     {
@@ -141,8 +165,8 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
                 Vector3Int next = filledTile + dir;
 
                 if (tilemap.GetTile(next) == null &&
-                    next.x >= 0 && next.x < canvasWidth &&
-                    next.y >= 0 && next.y < canvasHeight)
+                    next.x >= 0 && next.x < canvasWidth+1 &&
+                    next.y >= 0 && next.y < canvasHeight+1)
                 {
                     tilemap.SetTile(next, wallTile);
                 }
@@ -152,9 +176,9 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
 
     void GenerateCave()
     {
-        for (int ix = 0, x = x0 - canvasWidth / 2; ix < canvasWidth; ix += 3, x++)
+        for (int ix = 0, x = x0 - canvasWidth / 2; ix < canvasWidth - 4; ix += 3, x++)
         {
-            for (int iy = 0, y = y0 - canvasHeight / 2; iy < canvasHeight; iy += 3, y++)
+            for (int iy = 0, y = y0 - canvasHeight / 2; iy < canvasHeight - 4; iy += 3, y++)
             {
                 bool isOpen = IsCaveOpen(x, y, threshold);
 
@@ -223,7 +247,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
             {
                 Vector3Int next = current + dir;
 
-                if (next.x >= 0 && next.x < canvasWidth && next.y >= 0 && next.y < canvasHeight)
+                if (next.x >= 0 && next.x < canvasWidth-1 && next.y >= 0 && next.y < canvasHeight-1)
                 {
                     if (tilemap.GetTile(next) == fromTile)
                     {
