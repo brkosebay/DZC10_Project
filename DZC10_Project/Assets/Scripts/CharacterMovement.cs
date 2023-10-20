@@ -31,11 +31,7 @@ public class CharacterMovement : MonoBehaviour
         }
 
     }
-
-    private void FixedUpdate() {
-        rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
-    }
-
+    
     private void FixedUpdate() {
         rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
     }
