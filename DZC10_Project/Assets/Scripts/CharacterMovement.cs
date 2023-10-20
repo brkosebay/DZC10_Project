@@ -8,25 +8,29 @@ using UnityEngine.UIElements.Experimental;
 
 public class CharacterMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public Rigidbody2D rb;
+    public float speed = 5.0f;
     public Tilemap tilemap;  // Reference to the tilemap
     public Tile pathTile;     // Reference to the path tile
-    Vector2 movement;
-    public Animator animator;
 
     // Update is called once per frame
     private void Update()
     {
         // Allow movement
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-        animator.SetFloat("Horizontal", movement.x);
-        animator.SetFloat("Vertical", movement.y);
-        animator.SetFloat("Speed", movement.sqrMagnitude);
-        if(movement.x == 1 || movement.x == -1 || movement.y == 1 || movement.y == -1) {
-            animator.SetFloat("LastHorizontal", Input.GetAxisRaw("Horizontal"));
-            animator.SetFloat("LastVertical", Input.GetAxisRaw("Vertical"));
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            transform.Translate(-speed * Time.deltaTime, 0, 0);
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            transform.Translate(speed * Time.deltaTime, 0, 0);
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            transform.Translate(0, speed * Time.deltaTime, 0);
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            transform.Translate(0, -speed * Time.deltaTime, 0);
         }
 
         /*CaveGeneratorWithFloodFill generator = FindObjectOfType<CaveGeneratorWithFloodFill>();
@@ -38,10 +42,6 @@ public class CharacterMovement : MonoBehaviour
             Debug.LogWarning("Character is in close proximity to the edge!");
         }*/
 
-    }
-    
-    private void FixedUpdate() {
-        rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
     }
 
 
