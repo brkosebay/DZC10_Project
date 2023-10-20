@@ -13,6 +13,7 @@ public class CharacterMovement : MonoBehaviour
     public Tilemap tilemap;  // Reference to the tilemap
     public Tile pathTile;     // Reference to the path tile
     Vector2 movement;
+    public Animator animator;
 
     // Update is called once per frame
     private void Update()
@@ -20,6 +21,13 @@ public class CharacterMovement : MonoBehaviour
         // Allow movement
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
+        animator.SetFloat("Horizontal", movement.x);
+        animator.SetFloat("Vertical", movement.y);
+        animator.SetFloat("Speed", movement.sqrMagnitude);
+        if(movement.x == 1 || movement.x == -1 || movement.y == 1 || movement.y == -1) {
+            animator.SetFloat("LastHorizontal", Input.GetAxisRaw("Horizontal"));
+            animator.SetFloat("LastVertical", Input.GetAxisRaw("Vertical"));
+        }
 
         CaveGeneratorWithFloodFill generator = FindObjectOfType<CaveGeneratorWithFloodFill>();
         Vector3Int playerCell = generator.tilemap.WorldToCell(transform.position);
