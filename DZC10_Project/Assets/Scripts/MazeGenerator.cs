@@ -44,7 +44,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
                 int randomY = UnityEngine.Random.Range(0, canvasHeight);
                 startPoint = new Vector3Int(randomX, randomY, 0);
 
-                if (tilemap.GetTile(startPoint) == openTile)
+                if (tilemap.GetTile(startPoint) == openTile && IsSurroundedByOpenTiles(startPoint))
                 {
                     foundOpenTile = true;
                     break;
@@ -127,6 +127,27 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
     private void NotifyMazeGenerationComplete()
     {
         OnMazeGenerationComplete?.Invoke();
+    }
+
+    private bool IsSurroundedByOpenTiles(Vector3Int point)
+    {
+        Vector3Int[] directions = {
+        new Vector3Int(1, 0, 0), // right
+        new Vector3Int(-1, 0, 0), // left
+        new Vector3Int(0, 1, 0), // up
+        new Vector3Int(0, -1, 0), // down
+    };
+
+        foreach (Vector3Int dir in directions)
+        {
+            TileBase neighboringTile = tilemap.GetTile(point + dir);
+            if (neighboringTile != openTile)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     void AddBushesOnWalls()
