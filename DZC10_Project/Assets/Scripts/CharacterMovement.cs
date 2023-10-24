@@ -28,54 +28,40 @@ public class CharacterMovement : MonoBehaviour
             animator.SetFloat("LastHorizontal", Input.GetAxisRaw("Horizontal"));
             animator.SetFloat("LastVertical", Input.GetAxisRaw("Vertical"));
         }
-
-        /*CaveGeneratorWithFloodFill generator = FindObjectOfType<CaveGeneratorWithFloodFill>();
-        Vector3Int playerCell = generator.tilemap.WorldToCell(transform.position);
-        Vector3Int direction = new Vector3Int(Mathf.RoundToInt(Input.GetAxis("Horizontal")), Mathf.RoundToInt(Input.GetAxis("Vertical")), 0);
-
-        if (IsNearOpenEdge(playerCell, generator, direction))
-        {
-            Debug.LogWarning("Character is in close proximity to the edge!");
-        }*/
-
     }
     
     private void FixedUpdate() {
         rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
     }
 
-
-    bool IsNearOpenEdge(Vector3Int playerCell, CaveGeneratorWithFloodFill generator, Vector3Int direction)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        int edgeThreshold = 5;
-
-        int continuousEmptyTiles = 0;
-
-        // Check for tiles in the direction of movement for a distance of edgeThreshold
-        for (int dist = 1; dist <= edgeThreshold; dist++)
+        Debug.Log("Collided with: " + collision.gameObject.tag);
+        if (collision.gameObject.tag == "DecorationsTilemap")
         {
-            Vector3Int checkCell = playerCell + direction * dist;
-            TileBase tile = generator.tilemap.GetTile(checkCell);
+            // Get the Tilemap component from the collided GameObject.
+            Tilemap collidedTilemap = collision.gameObject.GetComponent<Tilemap>();
 
-            if (tile == null) // No tile means it's an empty space
+            if (collidedTilemap == null)
             {
-                continuousEmptyTiles++;
-            }
-            else
-            {
-                continuousEmptyTiles = 0; // Reset the counter if we find a tile
+                // Just a safety check. If for some reason the tag is set but there's no Tilemap component.
+                return;
             }
 
-            if (continuousEmptyTiles == edgeThreshold) // If we have a sequence of edgeThreshold empty tiles
+            Vector3 hitPosition = Vector3.zero;
+            foreach (ContactPoint2D hit in collision.contacts)
             {
-                return true;
+                hitPosition.x = hit.point.x - 0.01f * hit.normal.x;
+                hitPosition.y = hit.point.y - 0.01f * hit.normal.y;
+
+                TileBase impactedTile = collidedTilemap.GetTile(collidedTilemap.WorldToCell(hitPosition));
+
+                if (impactedTile.name == "BushTile")
+                {
+                    Debug.Log("hit a bush");
+                    // Handle the bush collision. For example, stop the character's movement.
+                }
             }
         }
-
-        return false;
     }
-
-
-
-
 }
