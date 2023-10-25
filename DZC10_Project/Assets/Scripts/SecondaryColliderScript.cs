@@ -31,8 +31,6 @@ public class SecondaryColliderScript : MonoBehaviour
                 if (impactedTile.name == "bushTile")
                 {
                     Debug.Log("hit a bush");
-                    // Handle the bush collision. For example, stop the character's movement.
-                    // You can communicate with the main player script to execute the desired behavior if needed.
                 }
             }
         }

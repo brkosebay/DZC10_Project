@@ -25,10 +25,24 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
 
     void Start()
     {
+
+        int difficulty = GameManager.Instance.difficultyLevel;
         int maxRegenerationAttempts = 10; // Limit the number of times we regenerate the entire cave
         int regenerationAttempts = 0;
+        int minNoOfTiles = 0;
         Vector3Int startPoint = new Vector3Int();
-
+        if (difficulty == 1)
+        {
+            minNoOfTiles = 300;
+        }
+        else if (difficulty == 2)
+        {
+            minNoOfTiles = 500;
+        }
+        else if (difficulty == 3)
+        {
+            minNoOfTiles = 700;
+        }
         do
         {
             GenerateCave();
@@ -56,7 +70,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
             {
                 FloodFill(startPoint, openTile, pathTile);
 
-                if (floodFilledTiles.Count <= 500)
+                if (floodFilledTiles.Count <= minNoOfTiles)
                 {
                     // Not enough tiles in this cave generation, reset and try again
                     floodFilledTiles.Clear();
@@ -77,7 +91,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
             {
                 Debug.LogWarning("Could not find an open tile to start from after " + maxAttempts + " attempts.");
             }
-        } while (floodFilledTiles.Count <= 100 && regenerationAttempts < maxRegenerationAttempts);
+        } while (floodFilledTiles.Count <= minNoOfTiles && regenerationAttempts < maxRegenerationAttempts);
 
         if (regenerationAttempts == maxRegenerationAttempts)
         {
