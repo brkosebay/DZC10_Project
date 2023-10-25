@@ -17,6 +17,6 @@ public class Weapon : MonoBehaviour
 
 	void Shoot ()
 	{
-		Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+		GameObject spell = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
 	}
 }

@@ -8,12 +8,16 @@ using UnityEngine.UIElements.Experimental;
 
 public class CharacterMovement : MonoBehaviour
 {
+
     public float moveSpeed = 5f;
+    public float spellSpeed = 7.5f;
     public Rigidbody2D rb;
     public Tilemap tilemap;  // Reference to the tilemap
     public Tile pathTile;     // Reference to the path tile
     Vector2 movement;
     public Animator animator;
+    public GameObject bulletPrefab;
+    public GameObject crossHair;
 
     // Update is called once per frame
     private void Update()
@@ -21,6 +25,7 @@ public class CharacterMovement : MonoBehaviour
         // Allow movement
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
+
         animator.SetFloat("Horizontal", movement.x);
         animator.SetFloat("Vertical", movement.y);
         animator.SetFloat("Speed", movement.sqrMagnitude);
@@ -28,11 +33,30 @@ public class CharacterMovement : MonoBehaviour
             animator.SetFloat("LastHorizontal", Input.GetAxisRaw("Horizontal"));
             animator.SetFloat("LastVertical", Input.GetAxisRaw("Vertical"));
         }
+
+        AimShoot();
     }
     
     private void FixedUpdate() {
         rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
     }
+
+    private void AimShoot() {  
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 shootingDirection = mousePos - (Vector2)transform.position;
+        shootingDirection.Normalize();
+
+
+        shootingDirection.Normalize();
+        
+        if (Input.GetButtonDown("Fire1"))
+        {
+            GameObject spell = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+            spell.gameObject.GetComponent<Rigidbody2D>().velocity = shootingDirection * spellSpeed;
+            spell.transform.Rotate(0, 0, Mathf.Atan2(shootingDirection.y, shootingDirection.x) * Mathf.Rad2Deg);
+        }
+}
+
 
     void OnCollisionEnter2D(Collision2D collision)
     {
