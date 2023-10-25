@@ -15,8 +15,8 @@ public class EnemyManager : MonoBehaviour
     {
         generator = FindObjectOfType<CaveGeneratorWithFloodFill>();
         playerTransform = FindObjectOfType<CharacterMovement>().transform;
-        int difficulty = GameManager.Instance.difficultyLevel;
-        if (difficulty == 1)
+        //int difficulty = GameManager.Instance.difficultyLevel;
+        /*if (difficulty == 1)
         {
             numberOfEnemies = 20;
         }
@@ -27,7 +27,7 @@ public class EnemyManager : MonoBehaviour
         else if (difficulty == 3)
         {
             numberOfEnemies = 60;
-        }
+        }*/
         generator.OnMazeGenerationComplete += SpawnEnemiesCallback;
 
     }
