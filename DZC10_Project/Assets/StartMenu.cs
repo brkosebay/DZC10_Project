@@ -6,6 +6,6 @@ using UnityEngine.SceneManagement;
 public class StartMenu : MonoBehaviour
 {
     public void PlayGame(){
-        SceneManager.LoadSceneAsync("MainGameScene");
+        SceneManager.LoadSceneAsync("LevelPickerScene");
     }
 }

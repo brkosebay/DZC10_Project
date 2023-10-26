@@ -121,7 +121,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
 
         tilemap.RefreshAllTiles();  // Refresh the tilemap
 
-        DebugWalls();
+        //DebugWalls();
         // Calculate bounds based on floodFilledTiles.
         minFloodFill = new Vector3Int(int.MaxValue, int.MaxValue, 0);
         maxFloodFill = new Vector3Int(int.MinValue, int.MinValue, 0);
