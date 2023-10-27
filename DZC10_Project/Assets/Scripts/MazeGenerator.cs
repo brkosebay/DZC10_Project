@@ -9,6 +9,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
     public Tile wallTile;
     public Tile pathTile;
     public EnvironmentDecorator environmentDecorator;
+    public PositionColliders positionColliders;
 
     public float threshold = 0.4f;
     public int scale = 1;
@@ -20,36 +21,47 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
     public int canvasHeight = 64;
     public delegate void MazeGenerationCompleteHandler();
     public event MazeGenerationCompleteHandler OnMazeGenerationComplete;
+    
 
     private const float PI50000 = Mathf.PI * 50000f;
 
     void Start()
     {
 
-        //int difficulty = GameManager.Instance.difficultyLevel;
-        int maxRegenerationAttempts = 10; // Limit the number of times we regenerate the entire cave
+        int difficulty = GameManager.Instance.difficultyLevel;
+        int maxRegenerationAttempts = 20; // Limit the number of times we regenerate the entire cave
         int regenerationAttempts = 0;
-        int minNoOfTiles = 500;
+        int minNoOfTiles = 0;
+        int maxNoOfTiles = 0;
         Vector3Int startPoint = new Vector3Int();
-        /*if (difficulty == 1)
+        if (difficulty == 1)
         {
             minNoOfTiles = 300;
+            maxNoOfTiles = 600;
         }
         else if (difficulty == 2)
         {
-            minNoOfTiles = 500;
+            minNoOfTiles = 600;
+            maxNoOfTiles = 1000;
+
         }
         else if (difficulty == 3)
         {
-            minNoOfTiles = 700;
-        }*/
+            minNoOfTiles = 1000;
+            maxNoOfTiles = 1500;
+        }
+        else
+        {
+            minNoOfTiles = 300;
+            maxNoOfTiles = 600;
+        }
         do
         {
             GenerateCave();
             bool foundOpenTile = false;
-         
+
             // Find an open tile to start from
-            int maxAttempts = 1000;
+            int maxAttempts = 15000;
             int attempts = 0;
             while (attempts < maxAttempts)
             {
@@ -70,7 +82,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
             {
                 FloodFill(startPoint, openTile, pathTile);
 
-                if (floodFilledTiles.Count <= minNoOfTiles)
+                if (floodFilledTiles.Count < minNoOfTiles || floodFilledTiles.Count > maxNoOfTiles)
                 {
                     // Not enough tiles in this cave generation, reset and try again
                     floodFilledTiles.Clear();
@@ -91,7 +103,7 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
             {
                 Debug.LogWarning("Could not find an open tile to start from after " + maxAttempts + " attempts.");
             }
-        } while (floodFilledTiles.Count <= 100 && regenerationAttempts < maxRegenerationAttempts);
+        } while (floodFilledTiles.Count < minNoOfTiles || floodFilledTiles.Count > maxNoOfTiles && regenerationAttempts < maxRegenerationAttempts);
 
         if (regenerationAttempts == maxRegenerationAttempts)
         {
@@ -117,7 +129,6 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
 
         // Then add the walls around the flood-filled area
         AddWallsAroundFloodFilledArea();
-        //AddBushesOnWalls();
 
         tilemap.RefreshAllTiles();  // Refresh the tilemap
 
@@ -133,7 +144,8 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
             if (tile.x > maxFloodFill.x) maxFloodFill.x = tile.x;
             if (tile.y > maxFloodFill.y) maxFloodFill.y = tile.y;
         }
-        
+
+        positionColliders.PositionBoundaryColliders(minFloodFill.x, minFloodFill.y, maxFloodFill.x, maxFloodFill.y);
         NotifyMazeGenerationComplete();
     }
 

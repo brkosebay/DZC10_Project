@@ -4,6 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     public int difficultyLevel;
+    public int points = 0;
 
     private void Awake()
     {
@@ -16,5 +17,10 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void IncreaseScore(int amount)
+    {
+        points += amount;
     }
 }

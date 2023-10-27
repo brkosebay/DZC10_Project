@@ -12,6 +12,7 @@ public class EnemyAI : MonoBehaviour
     private float idleTimer = 0.0f;      // Timer for idling
     public int health = 100;
     public GameObject deathEffect;
+    public int noOfPoints = 5;
 
     private enum State
     {
@@ -24,6 +25,19 @@ public class EnemyAI : MonoBehaviour
 
     private void Start()
     {
+        int difficulty = GameManager.Instance.difficultyLevel;
+        if (difficulty == 1)
+        {
+            noOfPoints = 5;
+        }
+        else if (difficulty == 2)
+        {
+            noOfPoints = 10;
+        }
+        else if (difficulty == 3)
+        {
+            noOfPoints = 20;
+        }
         // Find the player using the "Player" tag
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -34,6 +48,7 @@ public class EnemyAI : MonoBehaviour
         {
             Debug.LogWarning("No player found. Please make sure your player has the 'Player' tag.");
         }
+
     }
 
     private void Update()
@@ -120,5 +135,6 @@ public class EnemyAI : MonoBehaviour
         GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
         Destroy(effect,0.05f);
         Destroy(gameObject);
+        GameManager.Instance.IncreaseScore(noOfPoints);
     }
 }
