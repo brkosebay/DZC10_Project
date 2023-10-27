@@ -1228,6 +1228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 100
+  deathEffect: {fileID: 2653602973865475380, guid: f9c68bd5c2123f44b9dc3f98f648e581, type: 3}
 --- !u!114 &605077856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2286,7 +2287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35871659324584df5a6fe9f0c14974d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 9076855483468663924, guid: 3afac66a6d60e4378a8dfc9b9f0a7da0, type: 3}
+  enemyPrefab: {fileID: 8606891576545105546, guid: 0313174eefec8524ba8a9387cc9de60c, type: 3}
   numberOfEnemies: 30
   safeDistanceFromPlayer: 0
   generator: {fileID: 845263680}

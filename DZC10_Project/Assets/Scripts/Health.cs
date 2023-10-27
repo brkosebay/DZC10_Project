@@ -4,15 +4,16 @@ public class Health : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth;
+    public GameObject deathEffect;
 
     private void Start()
     {
         currentHealth = maxHealth;
     }
 
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(int damage)
     {
-        currentHealth -= damageAmount;
+        currentHealth -= damage;
         if (currentHealth <= 0)
         {
             Die();
@@ -21,7 +22,8 @@ public class Health : MonoBehaviour
 
     void Die()
     {
-        // Handle death. For example:
+        GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
+        Destroy(effect,0.05f);
         Destroy(gameObject);
     }
 }

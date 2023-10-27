@@ -13,6 +13,10 @@ public class EnemyAI : MonoBehaviour
     public int health = 100;
     public GameObject deathEffect;
     public int noOfPoints = 5;
+    public float shootingRange = 5.0f;
+    public float shootingCooldown = 10.0f;
+    private float shootingTimer = 0.0f;
+    public GameObject bulletPrefab;
 
     private enum State
     {
@@ -65,6 +69,10 @@ public class EnemyAI : MonoBehaviour
                 ChaseBehavior();
                 break;
         }
+        if (shootingTimer > 0.0f)
+        {
+            shootingTimer -= Time.deltaTime;
+        }
     }
 
     private void IdleBehavior()
@@ -112,12 +120,28 @@ public class EnemyAI : MonoBehaviour
             {
                 Vector3 moveDirection = (playerTransform.position - transform.position).normalized;
                 transform.position += moveDirection * moveSpeed * Time.deltaTime;
+                if (distanceToPlayer <= shootingRange && shootingTimer <= 0.0f)
+                {
+                    Shoot();
+                }
             }
             else
             {
                 currentState = State.Patrol; // Switch back to patrol if player is out of range
             }
         }
+    }
+
+    private void Shoot()
+    {
+        // Instantiate the bullet and set its direction
+        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        Vector2 direction = (playerTransform.position - transform.position).normalized;
+        Debug.DrawRay(transform.position, direction * 5.0f, Color.red, 2.0f);
+        bullet.GetComponent<Rigidbody2D>().velocity = direction * 10.0f; // Assuming bullet has a Rigidbody2D
+        
+        // Reset shooting timer
+        shootingTimer = shootingCooldown;
     }
 
     public void TakeDamage(int damage)
@@ -132,8 +156,8 @@ public class EnemyAI : MonoBehaviour
 
     void Die()
     {
-        GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
-        Destroy(effect,0.05f);
+        //GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
+        //Destroy(effect,0.05f);
         Destroy(gameObject);
         GameManager.Instance.IncreaseScore(noOfPoints);
     }
