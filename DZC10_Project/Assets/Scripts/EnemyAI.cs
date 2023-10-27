@@ -11,7 +11,10 @@ public class EnemyAI : MonoBehaviour
     private int currentPatrolPoint = 0;  // Current patrol point index
     private float idleTimer = 0.0f;      // Timer for idling
     public int health = 100;
-    public GameObject deathEffect;
+    public float shootingRange = 5.0f;
+    public float shootingCooldown = 10.0f;
+    private float shootingTimer = 0.0f;
+    public GameObject bulletPrefab;
 
     private enum State
     {
@@ -97,12 +100,31 @@ public class EnemyAI : MonoBehaviour
             {
                 Vector3 moveDirection = (playerTransform.position - transform.position).normalized;
                 transform.position += moveDirection * moveSpeed * Time.deltaTime;
+                if (distanceToPlayer <= shootingRange && shootingTimer <= 0.0f)
+                {
+                    Shoot();
+                    if (shootingTimer > 0.0f)
+                    {
+                        shootingTimer -= Time.deltaTime;
+                    }
+                }
             }
             else
             {
                 currentState = State.Patrol; // Switch back to patrol if player is out of range
             }
         }
+    }
+
+    private void Shoot()
+    {
+        // Instantiate the bullet and set its direction
+        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        Vector3 direction = (playerTransform.position - transform.position).normalized;
+        bullet.GetComponent<Rigidbody>().velocity = direction * 10.0f; // Assuming bullet has a Rigidbody and moves at a speed of 10 units/sec
+        
+        // Reset shooting timer
+        shootingTimer = shootingCooldown;
     }
 
     public void TakeDamage(int damage)
@@ -117,8 +139,8 @@ public class EnemyAI : MonoBehaviour
 
     void Die()
     {
-        GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
-        Destroy(effect,0.05f);
+        //GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
+        //Destroy(effect,0.05f);
         Destroy(gameObject);
     }
 }

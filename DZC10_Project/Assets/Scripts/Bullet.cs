@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 10f; 
+    public float speed = 5f; 
     public Rigidbody2D rb;
-    public int damage = 40;
-    public GameObject impactEffect;
+    public int damage;
+    //public GameObject impactEffect;
     private Animator bulletAnimator; // Reference to the animator component
+    public GameObject impactEffect;
 
     private void Awake()
     {
@@ -32,7 +33,7 @@ public class Bullet : MonoBehaviour
     {
         Debug.Log("I HIT " + hitInfo.gameObject.tag + "!");
         
-        if (hitInfo.gameObject.tag == "Enemy")
+        if (hitInfo.gameObject.tag == "Enemy" && gameObject.tag == "Bullet")
         {
             EnemyAI enemy = hitInfo.GetComponent<EnemyAI>();
             if (enemy != null)
@@ -42,12 +43,23 @@ public class Bullet : MonoBehaviour
 
             GameObject effect = Instantiate(impactEffect, transform.position, transform.rotation);
             Destroy(effect, 0.5f); // Destroy the effect after 0.5 seconds (adjust as needed)
+            Destroy(gameObject, 0.5f);
 
-            PlayImpactAnimation(); // Play the Bullet_impact animation when hitting an enemy
+            //PlayImpactAnimation(); // Play the Bullet_impact animation when hitting an enemy
         }
-        else if (hitInfo.gameObject.tag != "Player")
+        else if (hitInfo.gameObject.tag == "Player" && gameObject.tag == "EnemyBullet")
         {
-            PlayImpactAnimation(); // Play the Bullet_impact animation for other objects as well
+            Debug.Log("hit by enemy");
+            Health player = hitInfo.GetComponent<Health>();
+            if(player != null)
+            {
+                player.TakeDamage(damage);
+            }
+
+            GameObject effect = Instantiate(impactEffect, transform.position, transform.rotation);
+            Destroy(effect, 0.5f); // Destroy the effect after 0.5 seconds (adjust as needed)
+            Destroy(gameObject, 0.5f);
         }
+
     }
 }
