@@ -43,7 +43,7 @@ public class Bullet : MonoBehaviour
 
             GameObject effect = Instantiate(impactEffect, transform.position, transform.rotation);
             Destroy(effect, 0.5f); // Destroy the effect after 0.5 seconds (adjust as needed)
-            Destroy(gameObject, 0.5f);
+            Destroy(gameObject, 0.1f);
 
             //PlayImpactAnimation(); // Play the Bullet_impact animation when hitting an enemy
         }
@@ -58,7 +58,7 @@ public class Bullet : MonoBehaviour
 
             GameObject effect = Instantiate(impactEffect, transform.position, transform.rotation);
             Destroy(effect, 0.5f); // Destroy the effect after 0.5 seconds (adjust as needed)
-            Destroy(gameObject, 0.5f);
+            Destroy(gameObject, 0.1f);
         }
 
     }

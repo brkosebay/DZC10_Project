@@ -53,6 +53,10 @@ public class EnemyAI : MonoBehaviour
                 ChaseBehavior();
                 break;
         }
+        if (shootingTimer > 0.0f)
+        {
+            shootingTimer -= Time.deltaTime;
+        }
     }
 
     private void IdleBehavior()
@@ -103,10 +107,6 @@ public class EnemyAI : MonoBehaviour
                 if (distanceToPlayer <= shootingRange && shootingTimer <= 0.0f)
                 {
                     Shoot();
-                    if (shootingTimer > 0.0f)
-                    {
-                        shootingTimer -= Time.deltaTime;
-                    }
                 }
             }
             else
@@ -120,8 +120,9 @@ public class EnemyAI : MonoBehaviour
     {
         // Instantiate the bullet and set its direction
         GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-        Vector3 direction = (playerTransform.position - transform.position).normalized;
-        bullet.GetComponent<Rigidbody>().velocity = direction * 10.0f; // Assuming bullet has a Rigidbody and moves at a speed of 10 units/sec
+        Vector2 direction = (playerTransform.position - transform.position).normalized;
+        Debug.DrawRay(transform.position, direction * 5.0f, Color.red, 2.0f);
+        bullet.GetComponent<Rigidbody2D>().velocity = direction * 10.0f; // Assuming bullet has a Rigidbody2D
         
         // Reset shooting timer
         shootingTimer = shootingCooldown;
