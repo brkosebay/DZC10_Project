@@ -7,9 +7,8 @@ public class Bullet : MonoBehaviour
     public float speed = 5f; 
     public Rigidbody2D rb;
     public int damage;
-    //public GameObject impactEffect;
+    private bool hasHit = false;
     private Animator bulletAnimator; // Reference to the animator component
-    public GameObject impactEffect;
 
     private void Awake()
     {
@@ -19,8 +18,38 @@ public class Bullet : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        // Play the Bullet_impact animation after 1 second
+        // Play the Bullet_impact animation after 0.5 second
         Invoke("PlayImpactAnimation", 0.5f);
+    }
+
+    private void Update() {
+        if (!hasHit) {
+            transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (!hasHit && (other.CompareTag("Enemy") || other.CompareTag("Player"))) {
+            hasHit = true;
+            StickToTarget(other.gameObject);
+        }
+    }
+
+    private void StickToTarget(GameObject target) {
+        // Stop the bullet
+        speed = 0;
+
+        // Parent the bullet to the target
+        transform.SetParent(target.transform);
+
+        // Apply damage if the target has a Health component
+        Health targetHealth = target.GetComponent<Health>();
+        if (targetHealth != null) {
+            targetHealth.TakeDamage(damage);
+        }
+
+        // Destroy the bullet after a delay
+        Destroy(gameObject, 1.0f);
     }
 
     void PlayImpactAnimation()
@@ -30,9 +59,7 @@ public class Bullet : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D hitInfo)
-    {
-        Debug.Log("I HIT " + hitInfo.gameObject.tag + "!");
-        
+    {   
         if (hitInfo.gameObject.tag == "Enemy" && gameObject.tag == "Bullet")
         {
             EnemyAI enemy = hitInfo.GetComponent<EnemyAI>();
@@ -41,24 +68,21 @@ public class Bullet : MonoBehaviour
                 enemy.TakeDamage(damage);
             }
 
-            GameObject effect = Instantiate(impactEffect, transform.position, transform.rotation);
-            Destroy(effect, 0.5f); // Destroy the effect after 0.5 seconds (adjust as needed)
-            Destroy(gameObject, 0.1f);
+            speed = 0f;
+            Destroy(gameObject, 1f);
 
-            //PlayImpactAnimation(); // Play the Bullet_impact animation when hitting an enemy
+            PlayImpactAnimation(); // Play the Bullet_impact animation when hitting an enemy
         }
         else if (hitInfo.gameObject.tag == "Player" && gameObject.tag == "EnemyBullet")
         {
-            Debug.Log("hit by enemy");
             Health player = hitInfo.GetComponent<Health>();
             if(player != null)
             {
                 player.TakeDamage(damage);
             }
 
-            GameObject effect = Instantiate(impactEffect, transform.position, transform.rotation);
-            Destroy(effect, 0.5f); // Destroy the effect after 0.5 seconds (adjust as needed)
-            Destroy(gameObject, 0.1f);
+            speed = 0f;
+            Destroy(gameObject, 1f);
         }
 
     }

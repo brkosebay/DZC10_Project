@@ -163,9 +163,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
-  rb: {fileID: 207891668553491834}
+  rb: {fileID: 0}
   damage: 40
-  impactEffect: {fileID: 2360260579772870381, guid: 4b0e1774ddc812b498e46812f60ebe50, type: 3}
 --- !u!95 &4868521929325454889
 Animator:
   serializedVersion: 5
