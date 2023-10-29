@@ -27,7 +27,6 @@ public class CaveGeneratorWithFloodFill : MonoBehaviour
 
     void Start()
     {
-
         int difficulty = GameManager.Instance.difficultyLevel;
         int maxRegenerationAttempts = 20; // Limit the number of times we regenerate the entire cave
         int regenerationAttempts = 0;
