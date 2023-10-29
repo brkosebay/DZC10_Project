@@ -55,13 +55,14 @@ public class Bullet : MonoBehaviour
     void PlayImpactAnimation()
     {
         bulletAnimator.SetTrigger("Impact"); // Set the impact trigger to transition to the Bullet_impact animation
-        Destroy(gameObject, 0.5f); // Adjust this value based on the length of your Bullet_impact animation
+        Destroy(gameObject); // Adjust this value based on the length of your Bullet_impact animation
     }
 
     void OnTriggerEnter2D(Collider2D hitInfo)
     {   
         if (hitInfo.gameObject.tag == "Enemy" && gameObject.tag == "Bullet")
         {
+            PlayImpactAnimation(); // Play the Bullet_impact animation when hitting an enemy
             EnemyAI enemy = hitInfo.GetComponent<EnemyAI>();
             if (enemy != null)
             {
@@ -69,20 +70,17 @@ public class Bullet : MonoBehaviour
             }
 
             speed = 0f;
-            Destroy(gameObject, 1f);
-
-            PlayImpactAnimation(); // Play the Bullet_impact animation when hitting an enemy
+            
         }
         else if (hitInfo.gameObject.tag == "Player" && gameObject.tag == "EnemyBullet")
         {
+            speed = 0f;
+            Destroy(gameObject);
             Health player = hitInfo.GetComponent<Health>();
             if(player != null)
             {
                 player.TakeDamage(damage);
             }
-
-            speed = 0f;
-            Destroy(gameObject, 1f);
         }
 
     }
