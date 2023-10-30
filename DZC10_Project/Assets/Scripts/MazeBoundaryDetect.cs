@@ -18,6 +18,6 @@ public class MazeBoundaryDetect : MonoBehaviour
     {
         // TODO: Add your level completion logic here.
         Debug.Log("Level Completed!");
-        SceneManager.LoadScene("LevelPickerScene");
+        SceneManager.LoadScene("WinScene");
     }
 }

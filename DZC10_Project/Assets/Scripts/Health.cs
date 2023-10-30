@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class Health : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("LostScene");
         }
     }
 
