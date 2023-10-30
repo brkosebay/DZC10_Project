@@ -105,10 +105,10 @@ MonoBehaviour:
   detectionRadius: 10
   shootingDistance: 7
   spellSpeed: 7.5
-  maintainDistance: 5.5
   shootingCooldown: 5
   health: 100
   noOfPoints: 5
+  animator: {fileID: 8700322571016534448}
   bulletPrefab: {fileID: 5897324141644446553, guid: c281727e5268a964a9b8e84f4b5f575d, type: 3}
   bulletSpawnPoint: {fileID: 0}
 --- !u!61 &-4778309869720503000
